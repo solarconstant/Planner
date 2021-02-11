@@ -1,5 +1,15 @@
 This project was bootstrapped with [Create React App](https://github.com/facebook/create-react-app).
 
+Create and manage projects. <br />
+Tools used currently: <br />
+ReactJS with Redux <br />
+Firebase and Firestore <br />
+
+Features to add: <br />
+Page for each project <br />
+Some more info fields for the project <br />
+Better UI <br />
+
 ## Available Scripts
 
 In the project directory, you can run:
