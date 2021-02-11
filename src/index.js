@@ -1,19 +1,46 @@
-import React from 'react';
-import ReactDOM from 'react-dom';
-import App from './App';
-import * as serviceWorker from './serviceWorker';
-import { createStore } from 'redux';
-import rootReducer from './components/store/reducers/rootReducer';
-import { Provider } from 'react-redux';
+import React from "react";
+import ReactDOM from "react-dom";
+import App from "./App";
+import * as serviceWorker from "./serviceWorker";
+import { createStore, applyMiddleware, compose } from "redux";
+import rootReducer from "./components/store/reducers/rootReducer";
+import { Provider } from "react-redux";
+import thunk from "redux-thunk";
+import {
+  reduxFirestore,
+  getFirestore,
+  createFirestoreInstance
+} from "redux-firestore";
+import { ReactReduxFirebaseProvider, getFirebase, reactReduxFirebase } from "react-redux-firebase";
+import fbConfig from "./config/fbConfig";
+import firebase from "firebase/app";
 
-const store = createStore(rootReducer);
+const rrfConfig = { 
+  userProfile: 'projects',
+  useFirestoreForProfile: true
+}
+
+const store = createStore(
+  rootReducer,
+  compose(
+    applyMiddleware(thunk.withExtraArgument({ getFirestore, getFirebase })),
+    reduxFirestore(fbConfig)
+  )
+);
+const rffProps = {
+  firebase,
+  config: rrfConfig,
+  dispatch: store.dispatch,
+  createFirestoreInstance,
+  userProfile: 'users', // where profiles are stored in database
+  presence: 'presence', // where list of online users is stored in database
+  sessions: 'sessions'
+};
+
+
 
 ReactDOM.render(
-  <Provider store = {store}>
-    <React.StrictMode>
-      <App />
-    </React.StrictMode>
-  </Provider>,
+  <Provider store={store}><ReactReduxFirebaseProvider {...rffProps}><App /></ReactReduxFirebaseProvider></Provider>, 
   document.getElementById('root')
 );
 
